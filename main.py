@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Dict, Optional
 import pymysql
@@ -8,6 +9,15 @@ from datetime import datetime
 
 # 创建FastAPI应用实例
 app = FastAPI(title="学生数据平台", description="用户登录验证API", version="1.0.0")
+
+# 配置CORS中间件
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 允许所有来源，生产环境建议设置具体域名
+    allow_credentials=True,
+    allow_methods=["*"],  # 允许所有HTTP方法
+    allow_headers=["*"],  # 允许所有HTTP头
+)
 
 # 导入配置
 from config import DB_CONFIG, API_CONFIG

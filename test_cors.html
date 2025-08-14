@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS 测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 CORS 跨域请求测试</h1>
+        <p>此页面用于测试 API 服务器的 CORS 配置是否正确。</p>
+        
+        <div class="test-section">
+            <h3>🔍 健康检查测试</h3>
+            <button onclick="testHealth()">测试 /health 接口</button>
+            <div id="health-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🏠 根路径测试</h3>
+            <button onclick="testRoot()">测试 / 接口</button>
+            <div id="root-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔐 登录测试</h3>
+            <button onclick="testLogin()">测试 /login 接口</button>
+            <div id="login-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 测试结果汇总</h3>
+            <div id="summary"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+        let testResults = {};
+
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+                
+                const data = await response.json();
+                return {
+                    success: true,
+                    status: response.status,
+                    data: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+
+        function displayResult(elementId, result, title) {
+            const element = document.getElementById(elementId);
+            const isSuccess = result.success;
+            
+            element.className = `test-section ${isSuccess ? 'success' : 'error'}`;
+            element.innerHTML = `
+                <h4>${title} - ${isSuccess ? '✅ 成功' : '❌ 失败'}</h4>
+                <pre>${JSON.stringify(result, null, 2)}</pre>
+            `;
+            
+            testResults[elementId] = result;
+            updateSummary();
+        }
+
+        async function testHealth() {
+            const result = await makeRequest(`${API_BASE}/health`);
+            displayResult('health-result', result, '健康检查');
+        }
+
+        async function testRoot() {
+            const result = await makeRequest(`${API_BASE}/`);
+            displayResult('root-result', result, '根路径');
+        }
+
+        async function testLogin() {
+            const result = await makeRequest(`${API_BASE}/login`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: 'admin',
+                    password: 'admin123'
+                })
+            });
+            displayResult('login-result', result, '登录验证');
+        }
+
+        function updateSummary() {
+            const summary = document.getElementById('summary');
+            const totalTests = Object.keys(testResults).length;
+            const passedTests = Object.values(testResults).filter(r => r.success).length;
+            
+            summary.innerHTML = `
+                <h4>📈 测试统计</h4>
+                <p>总测试数: ${totalTests}</p>
+                <p>通过测试: ${passedTests}</p>
+                <p>失败测试: ${totalTests - passedTests}</p>
+                <p>成功率: ${totalTests > 0 ? Math.round((passedTests / totalTests) * 100) : 0}%</p>
+            `;
+        }
+
+        // 页面加载时自动运行所有测试
+        window.onload = function() {
+            setTimeout(() => {
+                testHealth();
+                testRoot();
+                testLogin();
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
