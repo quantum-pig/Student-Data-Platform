@@ -10,7 +10,7 @@ import json
 from typing import Dict
 
 # API基础URL
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://119.45.167.11:8000"
 
 def test_health_check():
     """测试健康检查接口"""

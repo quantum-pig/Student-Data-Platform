@@ -7,13 +7,13 @@ USE user_auth_db;
 UPDATE users SET password = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9' WHERE username = 'admin';
 
 -- 更新教师密码
-UPDATE users SET password = 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3' WHERE username = 'teacher_zhang';
-UPDATE users SET password = '2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881' WHERE username = 'teacher_li';
+UPDATE users SET password = 'cde383eee8ee7a4400adf7a15f716f179a2eb97646b37e089eb8d6d04e663416' WHERE username = 'teacher_zhang';
+UPDATE users SET password = 'c4ae9d6be6070858f1555488238f26cce9c97204fb9c514bfe9ff5a6899fc524' WHERE username = 'teacher_li';
 
 -- 更新学生密码
-UPDATE users SET password = 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3' WHERE username = 'student_wang';
-UPDATE users SET password = '2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881' WHERE username = 'student_liu';
-UPDATE users SET password = '3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1' WHERE username = 'student_chen';
+UPDATE users SET password = '703b0a3d6ad75b649a28adde7d83c6251da457549263bc7ff45ec709b0a8448b' WHERE username = 'student_wang';
+UPDATE users SET password = '4349edb26bb041f4ec64bf736b6320e951002403c461c5df1a4705ef837b7106' WHERE username = 'student_liu';
+UPDATE users SET password = '35503823ae8e063f908d703172c3fa35a7465a4c8e03f90c9c692117b3d06467' WHERE username = 'student_chen';
 
 -- 显示更新后的用户信息（不显示密码）
 SELECT id, username, user_type, is_active, created_at FROM users ORDER BY user_type, username;
