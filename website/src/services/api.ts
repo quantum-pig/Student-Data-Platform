@@ -213,9 +213,13 @@ export const chatWithDeepSeek = async (
   try {
     console.log('开始调用DeepSeek API...');
     
+    // 修复类型不兼容问题，将messages的role字段限制为"user" | "assistant" | "system"
     const request: DeepSeekRequest = {
       model: 'deepseek-chat',
-      messages: messages,
+      messages: messages.map(msg => ({
+        role: msg.role as "user" | "assistant" | "system",
+        content: msg.content
+      })),
       stream: true,
       temperature: 0.7,
     };

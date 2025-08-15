@@ -140,6 +140,58 @@ uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 #### DELETE /users/{user_id}
 删除用户（软删除）
 
+### 管理员管理 (`/admin`)
+
+#### POST /admin/
+创建新管理员
+
+**请求体：**
+```json
+{
+  "username": "admin_user",
+  "password": "admin123",
+  "email": "admin@example.com",
+  "phone": "13800138000",
+  "real_name": "管理员姓名",
+  "department": "信息技术部",
+  "role_level": "admin",
+  "permissions": ["user_manage", "system_config"]
+}
+```
+
+#### GET /admin/
+获取管理员列表（支持分页和过滤）
+
+**查询参数：**
+- `page`: 页码（默认1）
+- `page_size`: 每页数量（默认10，最大100）
+- `role_level`: 角色级别过滤（admin/super_admin）
+- `department`: 部门过滤
+- `is_active`: 活跃状态过滤
+
+#### GET /admin/{admin_id}
+获取特定管理员信息
+
+#### PUT /admin/{admin_id}
+更新管理员信息
+
+#### PUT /admin/{admin_id}/password
+更新管理员密码
+
+**请求体：**
+```json
+{
+  "old_password": "旧密码",
+  "new_password": "新密码"
+}
+```
+
+#### DELETE /admin/{admin_id}
+删除管理员（软删除）
+
+#### POST /admin/{admin_id}/restore
+恢复被删除的管理员
+
 ### 系统相关
 
 #### GET /
@@ -174,6 +226,36 @@ curl -X POST "http://localhost:8000/users/" \
 curl "http://localhost:8000/users/?page=1&page_size=10"
 ```
 
+### 创建管理员
+```bash
+curl -X POST "http://localhost:8000/admin/" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "username": "admin_user",
+       "password": "admin123",
+       "email": "admin@example.com",
+       "real_name": "管理员姓名",
+       "department": "信息技术部",
+       "role_level": "admin",
+       "permissions": ["user_manage", "system_config"]
+     }'
+```
+
+### 获取管理员列表
+```bash
+curl "http://localhost:8000/admin/?page=1&page_size=10&role_level=admin"
+```
+
+### 更新管理员密码
+```bash
+curl -X PUT "http://localhost:8000/admin/1/password" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "old_password": "admin123",
+       "new_password": "newadmin123"
+     }'
+```
+
 ## 项目结构
 
 ```
@@ -184,6 +266,7 @@ Student-Data-Platform/
 │   ├── config.py          # 配置文件
 │   ├── auth.py            # 认证模块
 │   ├── user_management.py # 用户管理模块
+│   ├── admin_management.py # 管理员管理模块
 │   └── test_*.py          # 测试文件
 ├── docs/                  # 文档目录
 │   ├── README.md          # 项目说明文档

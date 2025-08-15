@@ -10,6 +10,7 @@ from datetime import datetime
 # 导入模块 - 使用绝对导入
 from user_management import router as user_router
 from auth import router as auth_router
+from admin_management import router as admin_router
 
 # 创建FastAPI应用实例
 app = FastAPI(title="学生数据平台", description="用户登录验证API", version="1.0.0")
@@ -29,6 +30,7 @@ from config import DB_CONFIG, API_CONFIG
 # 注册路由
 app.include_router(auth_router)
 app.include_router(user_router)
+app.include_router(admin_router)
 
 # 基础响应模型
 class HealthResponse(BaseModel):
